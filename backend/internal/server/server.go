@@ -7,7 +7,7 @@ import (
 
 	"backend/internal/database"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
 )
 
@@ -27,7 +27,6 @@ func New() *FiberServer {
 		App: fiber.New(fiber.Config{
 			ServerHeader: "backend",
 			AppName:      "backend",
-			Prefork:      false, // turn this on for it to run on multiple cores
 		}),
 		DB:     DB,
 		Logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),

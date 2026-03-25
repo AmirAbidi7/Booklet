@@ -6,7 +6,7 @@ import (
 	"backend/internal/dtos"
 	"backend/internal/services"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type AuthController struct {
@@ -21,10 +21,10 @@ func NewAuthController(authService *services.AuthService, logger *slog.Logger) *
 	}
 }
 
-func (ac *AuthController) Register(c *fiber.Ctx) error {
+func (ac *AuthController) Register(c fiber.Ctx) error {
 	var req dtos.RegisterRequest
 
-	if err := c.BodyParser(&req); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid request body",
 		})
@@ -46,10 +46,10 @@ func (ac *AuthController) Register(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
-func (ac *AuthController) Login(c *fiber.Ctx) error {
+func (ac *AuthController) Login(c fiber.Ctx) error {
 	var req dtos.LoginRequest
 
-	if err := c.BodyParser(&req); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid request body",
 		})
@@ -65,7 +65,7 @@ func (ac *AuthController) Login(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func (ac *AuthController) Me(c *fiber.Ctx) error {
+func (ac *AuthController) Me(c fiber.Ctx) error {
 	userID, ok := c.Locals("user_id").(uint)
 	if !ok {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

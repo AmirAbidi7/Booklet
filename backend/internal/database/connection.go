@@ -15,9 +15,27 @@ func GetConn() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = db.SetupJoinTable(&models.Pdf{}, "Users", &models.UserPdf{})
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.SetupJoinTable(&models.User{}, "Pdfs", &models.UserPdf{})
+	if err != nil {
+		return nil, err
+	}
 	err = db.AutoMigrate(models.User{})
 	if err != nil {
 		return nil, err
 	}
+	err = db.AutoMigrate(models.Pdf{})
+	if err != nil {
+		return nil, err
+	}
+	err = db.AutoMigrate(models.UserPdf{})
+	if err != nil {
+		return nil, err
+	}
+
 	return db, nil
 }

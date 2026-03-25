@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gofiber/fiber/v3"
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -50,7 +51,7 @@ func main() {
 
 	go func() {
 		port, _ := strconv.Atoi(os.Getenv("PORT"))
-		err := server.Listen(fmt.Sprintf(":%d", port))
+		err := server.Listen(fmt.Sprintf(":%d", port), fiber.ListenConfig{EnablePrefork: false})
 		if err != nil {
 			panic(fmt.Sprintf("http server error: %s", err))
 		}
