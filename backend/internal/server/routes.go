@@ -21,7 +21,7 @@ func (s *FiberServer) RegisterFiberRoutes() {
 		MaxAge:           300,
 	}))
 
-	s.App.Get("/", s.HelloWorldHandler)
+	s.App.Get("/", s.HealthCheck)
 
 	auth := s.App.Group("/auth")
 	auth.Post("/register", authController.Register)
@@ -36,9 +36,9 @@ func (s *FiberServer) RegisterFiberRoutes() {
 	})
 }
 
-func (s *FiberServer) HelloWorldHandler(c *fiber.Ctx) error {
+func (s *FiberServer) HealthCheck(c *fiber.Ctx) error {
 	resp := fiber.Map{
-		"message": "Hello World",
+		"message": "Server is running!",
 	}
 
 	return c.JSON(resp)

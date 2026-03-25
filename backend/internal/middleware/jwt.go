@@ -33,7 +33,6 @@ func JWTProtected() fiber.Handler {
 			})
 		}
 
-		// Store user information in context for use in handlers
 		c.Locals("user_id", claims.UserID)
 		c.Locals("email", claims.Email)
 		c.Locals("role", claims.Role)
@@ -51,7 +50,6 @@ func RequireAdmin() fiber.Handler {
 			})
 		}
 
-		// Assuming Admin role = 1 based on your models
 		if role != 1 {
 			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 				"error": "Admin access required",
