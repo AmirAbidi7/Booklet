@@ -16,14 +16,16 @@ import (
 )
 
 type PdfService struct {
-	DB     *gorm.DB
-	Client *azblob.Client
+	DB            *gorm.DB
+	Client        *azblob.Client
+	containerName string
 }
 
 func NewPdfService(DB *gorm.DB, Client *azblob.Client) *PdfService {
 	return &PdfService{
 		DB,
 		Client,
+		"pdf-storage",
 	}
 }
 
@@ -60,8 +62,7 @@ func (ps PdfService) AddPdf(pdf models.Pdf, file *multipart.FileHeader, userID u
 				return err
 			}
 
-			containerName := "pdf-storage"
-			_, err = ps.Client.UploadStream(ctx, containerName,
+			_, err = ps.Client.UploadStream(ctx, ps.containerName,
 				strconv.FormatInt(int64(pdf.ID), 10),
 				openedFile, nil)
 			if err != nil {
@@ -97,10 +98,11 @@ func (ps PdfService) DeletePdf(pdfID uint, userID uint) error {
 			if err != nil {
 				return err
 			}
-			_, err = ps.Client.DeleteBlob(ctx, "pdf-storage", strconv.FormatInt(int64(pdfID), 10), nil)
+			_, err = ps.Client.DeleteBlob(ctx, ps.containerName, strconv.FormatInt(int64(pdfID), 10), nil)
 			if err != nil {
 				return err
 			}
+
 		}
 		return nil
 	})
@@ -114,4 +116,15 @@ func (ps PdfService) UpdateProgress(userPdf models.UserPdf) error {
 	}
 
 	return ps.DB.Save(&userPdf).Error
+}
+
+func (ps PdfService) GetPdfs(userID uint) ([]models.Pdf, error) {
+	ctx := context.Background()
+
+	pdfList, err := gorm.G[models.Pdf](ps.DB).Preload("user_pdf", nil).Where("user_id = ?", userID).Find(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return pdfList, nil
 }
