@@ -24,7 +24,7 @@ func (pdfR PdfRequest) toPdf() (*models.Pdf, *models.UserPdf) {
 	return &pdf, &userPdf
 }
 
-func method(pdf models.Pdf, userPdf models.UserPdf) *PdfResponse {
+func pdfToResponse(pdf models.Pdf, userPdf models.UserPdf) *PdfResponse {
 	return &PdfResponse{
 		pdf.ID,
 		userPdf.Title,

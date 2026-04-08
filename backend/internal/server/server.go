@@ -37,8 +37,8 @@ func New() *FiberServer {
 	if err != nil {
 		fmt.Printf("error authenticated to azure: %v", err)
 		os.Exit(1)
-
 	}
+
 	server := &FiberServer{
 		App: fiber.New(fiber.Config{
 			ServerHeader: "backend",
