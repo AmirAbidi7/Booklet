@@ -24,7 +24,7 @@ func NewPdfController(pdfService *services.PdfService, Logger *slog.Logger) *Pdf
 func (pc PdfController) displayPdfs(c fiber.Ctx) error {
 	userID, exists := c.Locals("user_id").(uint)
 
-	if exists {
+	if !exists {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "User not authenticated",
 		})
